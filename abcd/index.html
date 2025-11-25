@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="no-referrer">
+    <title>Job Listing Portal</title>
+    <link rel="stylesheet" href="script/styles/main.css">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<!-- <body> -->
+    <!-- <div id="toasts"></div> -->
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="#" id="nav-home" class="logo">Job<span class="accent">Portal</span></a>
+                <p class="tagline">Find talent. Get hired.</p>
+            </div>
+
+            <nav class="main-nav" aria-label="Main Navigation">
+                <button id="theme-toggle" class="nav-link" title="Toggle dark/light theme">🌙</button>
+                <button id="dashboard-toggle" class="nav-link" title="Open dashboard" aria-label="Open dashboard">
+                    <span class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+                <!-- <button id="nav-dashboard" class="nav-link">Dashboard</button> -->
+                <button id="nav-login" class="nav-link hidden">Login / Register</button>
+                <button id="nav-logout" class="nav-cta">👤</button>
+                
+            </nav>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- Hero Section with improved design -->
+        <section class="hero-banner">
+            <div class="hero-background">
+                <div class="hero-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Find Your <span class="gradient-text">Dream Job</span></h1>
+                        <p class="hero-subtitle">Discover thousands of opportunities from top companies worldwide. Your next career move starts here.</p>
+                        
+                        <!-- Enhanced Search Bar -->
+                        <div class="search-container">
+                            <div class="search-bar-enhanced">
+                                <div class="search-input-group">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" id="keyword-search" placeholder="Job title, keywords, or company">
+                                </div>
+                                <div class="location-input-group">
+                                    <span class="location-icon">📍</span>
+                                    <select id="location-filter" aria-label="Filter by location">
+                                        <option value="">Any Location</option>
+                                        <option value="remote">Remote</option>
+                                        <option value="new york">Delhi</option>
+                                        <option value="india">Mumbai</option>
+                                        <option value="boston">Noida</option>
+                                        <option value="san francisco">Banglore</option>
+                                    </select>
+                                </div>
+                                <button class="search-btn" onclick="searchJobs()">
+                                    <span>Search Jobs</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">100+</span>
+                                <span class="stat-label">Job Listings</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">50+</span>
+                                <span class="stat-label">Companies</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Remote</span>
+                                <span class="stat-label">Opportunities</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">On-Site</span>
+                                <span class="stat-label">Opportunities</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="container">
+            <section id="job-search-section" class="jobs-section">
+                <div class="section-header">
+                    <h2>Latest Job Opportunities</h2>
+                    <p>Explore our curated selection of the best job openings</p>
+                </div>
+                
+                <div class="jobs-container">
+                    <div class="jobs-grid">
+                        <div id="job-listings" class="job-listings">
+                            <div class="loading-state">
+                                <!-- Skeleton Loading Cards -->
+                                <div class="skeleton-card">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text short"></div>
+                                </div>
+                                <div class="skeleton-card">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text short"></div>
+                                </div>
+                                <div class="skeleton-card">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text short"></div>
+                                </div>
+                                 <div id="jobTableContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="jobs-sidebar">
+                        <div class="sidebar-card">
+                            <h3>Explore More</h3>
+                            <p>Ready to see all available positions?</p>
+                            <button id="view-all-jobs-btn" class="btn-explore">
+                                <span class="btn-icon">🚀</span>
+                                <span>View All Jobs & Internships</span>
+                            </button>
+                        </div>
+                        
+                        <div class="sidebar-card">
+                            <h3>Job Categories</h3>
+                            <div class="category-tags">
+                                <span class="category-tag" onclick="filterByCategory('Frontend')" style="cursor:pointer">Frontend</span>
+                                <span class="category-tag" onclick="filterByCategory('Backend')" style="cursor:pointer">Backend</span>
+                                <span class="category-tag" onclick="filterByCategory('Full Stack')" style="cursor:pointer">Full Stack</span>
+                                <span class="category-tag" onclick="filterByCategory('DevOps')" style="cursor:pointer">DevOps</span>
+                                <span class="category-tag" onclick="filterByCategory('Data Science')" style="cursor:pointer">Data Science</span>
+                                <span class="category-tag" onclick="filterByCategory('Mobile')" style="cursor:pointer">Mobile</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+           <section class="featured-companies">
+    <div class="section-header">
+        <h2>Trusted by Top Companies</h2>
+        <p>Join thousands of professionals working at leading organizations</p>
+    </div>
+    <div class="companies-grid">
+        <a href="https://www.google.com" target="_blank" class="company-logo">
+            🏢 Google 
+        </a>
+        <a href="https://www.microsoft.com" target="_blank" class="company-logo">
+            💼 Microsoft
+        </a>
+        <a href="https://www.amazon.com" target="_blank" class="company-logo">
+            🚀 Amazon
+        </a>
+        <a href="https://about.meta.com" target="_blank" class="company-logo">
+            ⚡ Meta
+        </a>
+        <a href="https://www.apple.com" target="_blank" class="company-logo">
+            🎯 Apple
+        </a>
+        <a href="https://www.ibm.com" target="_blank" class="company-logo">
+            🔷 IBM
+        </a>
+    </div>
+</section>
+
+            <!-- Success Stories Section -->
+            <section class="testimonials-section">
+                <div class="section-header">
+                    <h2>Team Member's Details </h2>
+                    <p>See how we've helped professionals land their dream jobs</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"AI&ML Student 2nd Year In Lucknow."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💻</div>
+                            <div>
+                                <div class="author-name">Bhaskar Bind</div>
+                                <div class="author-role">Team Leader To Help With Project</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good Knowledge In Development"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍💼</div>
+                            <div>
+                                <div class="author-name">Sakshi Argade</div>
+                                <div class="author-role">Assitant Role</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good Communication And Management"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍💼</div>
+                            <div>
+                                <div class="author-name">Ritima Kunddu</div>
+                                <div class="author-role">Supervisor</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good in Backend Devloper"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍🎨</div>
+                            <div>
+                                <div class="author-name">Happy Jangir</div>
+                                <div class="author-role">Backend Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletter Section -->
+            <section class="newsletter-section">
+                <div class="newsletter-content">
+                    <div class="newsletter-text">
+                        <h2>Get Job Alerts</h2>
+                        <p>Subscribe to receive the latest job opportunities directly in your inbox</p>
+                    </div>
+                    <div class="newsletter-form">
+                        <input type="email" id="newsletter-email" placeholder="Enter your email" aria-label="Email for newsletter">
+                        <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="container">
+
+            <section id="all-jobs-section" class="section-hidden">
+                <!-- all jobs/internships page injected by JS -->
+                <div class="all-jobs-container">
+                    <div class="all-jobs-header">
+                        <h2>All Jobs & Internships</h2>
+                        <button id="back-to-home" class="nav-link">← Back to Home</button>
+                    </div>
+                    <div class="all-jobs-filters">
+                        <input type="text" id="all-search-input" placeholder="Search jobs...">
+                        <select id="all-type-filter" aria-label="Filter by type">
+                            <option value="">All Types</option>
+                            <option value="jobs">Jobs Only</option>
+                            <option value="internships">Internships Only</option>
+                        </select>
+                        <select id="all-location-filter" aria-label="Filter by location">
+                            <option value="">All Locations</option>
+                            <option value="remote">Remote</option>
+                        </select>
+                        <button id="all-search-btn" class="btn-primary">Search</button>
+                    </div>
+                    <div id="all-jobs-list" class="all-jobs-list">
+                        Job cards injected here
+                    </div>
+                </div>
+            </section>
+
+            <section id="dashboard-section" class="dashboard-panel section-hidden" aria-hidden="true">
+                <div class="dashboard-header dashboard-draggable">
+                    <h2>Dashboard</h2>
+                    <button id="dashboard-close" class="nav-link" aria-label="Close dashboard">✕</button>
+                </div>
+                <div id="dashboard-content" class="dashboard-content">
+                    <!-- dashboard injected by JS -->
+                </div>
+            </section>
+
+            <div id="dashboard-overlay" class="dashboard-overlay section-hidden" aria-hidden="true"></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <h3>Job<span class="accent">Portal</span></h3>
+                        <p>Your gateway to amazing career opportunities</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Browse Jobs</a></li>
+                        <li><a href="#">Companies</a></li>
+                        <li><a href="#">Career Tips</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Technology</a></li>
+                        <li><a href="#">Design</a></li>
+                        <li><a href="#">Marketing</a></li>
+                        <li><a href="#">Remote Jobs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">📧</a>
+                        <a href="#" class="social-link">💼</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Job Portal by Group 19 - Web Development. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script/security.js"></script>
+    <script src="script/toast.js"></script>
+    <script src="script/dashboard.js"></script>
+    <script src="script/api.js"></script>
+    <script src="script/features.js"></script>
+    <script src="script/advanced-features.js"></script>
+    <script src="script/ui-helpers.js"></script>
+    <script src="script/auth.js"></script>
+    <script src="script/main.js"></script>
+    <script src="script/login.js"></script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top" title="Back to top">
+        ↑
+    </button>
+    
+    <style>
+    /* CRITICAL FIX: Make buttons clickable by fixing z-index hierarchy */
+    .job-card {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    .job-card * {
+        pointer-events: auto !important;
+    }
+    .job-actions {
+        position: relative !important;
+        z-index: 10 !important;
+        pointer-events: auto !important;
+    }
+    .apply-btn, .save-btn {
+        position: relative !important;
+        z-index: 999 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+    /* Remove any overlays that might block clicks */
+    .job-card::before,
+    .job-card::after {
+        pointer-events: none !important;
+    }
+    
+    /* FIX: Make category tags clickable */
+    .category-tag {
+        position: relative !important;
+        z-index: 100 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        display: inline-block !important;
+        transition: all 0.3s ease !important;
+    }
+    .category-tag:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    }
+    .category-tags {
+        position: relative !important;
+        z-index: 100 !important;
+        pointer-events: auto !important;
+    }
+    .sidebar-card {
+        position: relative !important;
+        z-index: 50 !important;
+    }
+    
+    /* Dashboard Button Fixes */
+    .dashboard-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    
+    .dashboard-section button {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        border: none !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        text-align: left !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #0ea5a4, #0b7b76) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(14, 165, 164, 0.3) !important;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(14, 165, 164, 0.4) !important;
+    }
+    
+    .btn-secondary {
+        background: #f3f4f6 !important;
+        color: #374151 !important;
+        font-weight: 500 !important;
+        border: 1px solid #e5e7eb !important;
+    }
+    
+    .btn-secondary:hover {
+        background: #e5e7eb !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .dashboard-content {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .dashboard-view {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    
+    /* Stats Grid Responsive */
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+        gap: 15px !important;
+        margin: 20px 0 !important;
+    }
+    
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 15px !important;
+        width: 100% !important;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+        font-size: 14px !important;
+    }
+    
+    /* Job Cards in Dashboard */
+    .dashboard-view .job-card {
+        margin: 15px 0 !important;
+        padding: 20px !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .job-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        margin-top: 12px !important;
+    }
+    
+    .job-actions button {
+        flex: 1 !important;
+        min-width: 120px !important;
+        max-width: 200px !important;
+    }
+    
+    /* Toast Notification Animation */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Featured Companies Section */
+    .featured-companies {
+        padding: 3rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        margin: 2rem 0;
+        border-radius: 20px;
+    }
+    
+    .companies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .company-logo {
+        background: white;
+        padding: 2rem 1rem;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .company-logo:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(14,165,164,0.2);
+    }
+    
+    /* Testimonials Section */
+    .testimonials-section {
+        padding: 3rem 0;
+    }
+    
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .testimonial-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--accent);
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+    
+    .testimonial-content {
+        margin-bottom: 1.5rem;
+    }
+    
+    .testimonial-content p {
+        font-style: italic;
+        color: var(--muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #0b7b76);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .author-name {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .author-role {
+        font-size: 0.85rem;
+        color: var(--muted);
+    }
+    
+    /* Newsletter Section */
+    .newsletter-section {
+        background: linear-gradient(135deg, var(--accent), #0b7b76);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        margin: 3rem 0;
+        color: white;
+    }
+    
+    .newsletter-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .newsletter-text h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .newsletter-text p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .newsletter-form {
+        display: flex;
+        gap: 1rem;
+        flex: 1;
+        max-width: 500px;
+    }
+    
+    .newsletter-form input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        outline: none;
+    }
+    
+    .newsletter-btn {
+        background: white;
+        color: var(--accent);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .newsletter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Scroll to Top Button */
+    .scroll-top-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--accent), #0b7b76);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(14,165,164,0.4);
+        transition: all 0.3s ease;
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0);
+    }
+    
+    .scroll-top-btn.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+    }
+    
+    .scroll-top-btn:hover {
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 8px 25px rgba(14,165,164,0.6);
+    }
+    
+    .scroll-top-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Dark Theme for New Sections */
+    html.dark-theme .featured-companies {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+    
+    html.dark-theme .company-logo {
+        background: #1e293b;
+        color: #f1f5f9;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    html.dark-theme .testimonial-card {
+        background: #1e293b;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    
+    html.dark-theme .testimonial-content p {
+        color: #cbd5e1;
+    }
+    
+    html.dark-theme .author-name {
+        color: #f1f5f9;
+    }
+    
+    html.dark-theme .author-role {
+        color: #94a3b8;
+    }
+    
+    /* Skeleton Loading Cards */
+    .skeleton-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+    
+    .skeleton-title {
+        height: 24px;
+        width: 70%;
+        margin-bottom: 1rem;
+    }
+    
+    .skeleton-text {
+        height: 16px;
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+    
+    .skeleton-text.short {
+        width: 60%;
+    }
+    
+    html.dark-theme .skeleton-card {
+        background: #1e293b;
+    }
+    
+    html.dark-theme .skeleton {
+        background: linear-gradient(90deg, #334155 25%, #475569 37%, #334155 63%);
+        background-size: 400% 100%;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .newsletter-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .newsletter-text h2 {
+            font-size: 1.5rem;
+        }
+        
+        .newsletter-form {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .companies-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .testimonials-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .scroll-top-btn {
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+        }
+    }
+    </style>
+    
+    <script>
+    // SCROLL TO TOP BUTTON
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    
+    scrollTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // NEWSLETTER SUBSCRIPTION
+    window.subscribeNewsletter = function() {
+        const emailInput = document.getElementById('newsletter-email');
+        const email = emailInput.value.trim();
+        
+        if (!email) {
+            alert('⚠️ Please enter your email address');
+            return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('⚠️ Please enter a valid email address');
+            return;
+        }
+        
+        // Save to localStorage
+        let subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+        
+        if (subscribers.includes(email)) {
+            alert('ℹ️ You are already subscribed!');
+            return;
+        }
+        
+        subscribers.push(email);
+        localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+        
+        alert('✅ Successfully subscribed! You will receive job alerts at ' + email);
+        emailInput.value = '';
+    };
+    
+    // SMOOTH SCROLL FOR INTERNAL LINKS
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && document.querySelector(href)) {
+                e.preventDefault();
+                document.querySelector(href).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // ANIMATE ELEMENTS ON SCROLL
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe sections for animation
+    setTimeout(() => {
+        document.querySelectorAll('.featured-companies, .testimonials-section, .newsletter-section').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+    }, 100);
+    
+    // CATEGORY TAGS FIX - Make them clickable
+    window.filterByCategory = function(category) {
+        console.log('🏷️ Category clicked:', category);
+        
+        if (typeof jobs === 'undefined' || !jobs) {
+            alert('Jobs are loading, please wait...');
+            return;
+        }
+        
+        const filtered = jobs.filter(job => {
+            const title = job.title.toLowerCase();
+            const description = job.description.toLowerCase();
+            const categoryLower = category.toLowerCase();
+            return title.includes(categoryLower) || description.includes(categoryLower);
+        });
+        
+        console.log('Found jobs:', filtered.length);
+        
+        // Show all jobs section
+        document.getElementById('job-search-section').style.display = 'none';
+        document.getElementById('all-jobs-section').classList.remove('section-hidden');
+        
+        // Display filtered jobs
+        if (typeof displayAllJobs === 'function') {
+            displayAllJobs(filtered);
+        }
+        
+        // Update header
+        const header = document.querySelector('#all-jobs-section .all-jobs-header h2');
+        if (header) {
+            header.textContent = `${category} Jobs (${filtered.length})`;
+        }
+    };
+    
+    // APPLY BUTTON FIX - Works 100%
+    document.addEventListener('DOMContentLoaded', function() {
+        // Category tags event listener
+        document.querySelectorAll('.category-tag').forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const category = this.textContent.trim();
+                console.log('Category tag clicked:', category);
+                filterByCategory(category);
+            });
+        });
+        
+        // Use event delegation on document
+        document.addEventListener('click', function(e) {
+            console.log('Click on:', e.target.className);
+            
+            // Check all possible click targets
+            let btn = null;
+            if (e.target.classList.contains('apply-btn')) {
+                btn = e.target;
+            } else if (e.target.closest('.apply-btn')) {
+                btn = e.target.closest('.apply-btn');
+            }
+            
+            if (btn) {
+                console.log('✅ Apply button clicked!');
+                e.preventDefault();
+                e.stopPropagation();
+                
+                let jobId = btn.getAttribute('data-job-id');
+                if (!jobId) {
+                    const card = btn.closest('.job-card');
+                    if (card) jobId = card.getAttribute('data-job-id');
+                }
+                
+                console.log('Job ID:', jobId);
+                
+                if (jobId) {
+                    // Check if user is logged in
+                    if (localStorage.getItem('isAuthenticated') !== 'true') {
+                        alert('Please login to apply for jobs');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    // Check if user is employer
+                    const userRole = localStorage.getItem('userRole');
+                    if (userRole === 'employer') {
+                        alert('Employers cannot apply for jobs. Only Job Seekers can apply.');
+                        return;
+                    }
+                    
+                    if (typeof jobs !== 'undefined') {
+                        localStorage.setItem('currentJobs', JSON.stringify(jobs));
+                    }
+                    
+                    window.location.href = 'apply.html?jobId=' + jobId;
+                }
+            }
+        }, true);
+        
+        // Debug
+        setTimeout(() => {
+            console.log('Jobs:', typeof jobs !== 'undefined' ? jobs.length : 'NOT LOADED');
+            console.log('Buttons:', document.querySelectorAll('.apply-btn').length);
+        }, 1000);
+    });
+    </script>
+    
+</body>
+</html>
