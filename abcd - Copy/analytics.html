@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Certificate System</title>
+    <link rel="stylesheet" href="script/styles/main.css">
+    <link rel="stylesheet" href="script/styles/admin.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="admin-dashboard.html" class="logo">Analytics<span class="accent">Dashboard</span></a>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="certificate.html" class="nav-link">Verify</a>
+                <button onclick="logout()" class="nav-link">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <h2>Certificate Analytics</h2>
+
+            <!-- Summary Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="total-count">0</h3>
+                    <p>Total Certificates</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="active-count">0</h3>
+                    <p>Active</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="inactive-count">0</h3>
+                    <p>Inactive</p>
+                </div>
+            </div>
+
+            <!-- Domain Breakdown -->
+            <div class="certificates-card">
+                <h3>Domain-wise Distribution</h3>
+                <div id="domain-chart"></div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="upload-card">
+                <h3>Export Data</h3>
+                <button onclick="exportCertificates()" class="upload-btn">Export All Certificates to Excel</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        function getAuthToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            window.location.href = 'login-cert.html';
+        }
+
+        async function loadAnalytics() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/certificates/analytics`, {
+                    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayAnalytics(data.analytics);
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        function displayAnalytics(analytics) {
+            document.getElementById('total-count').textContent = analytics.total;
+            document.getElementById('active-count').textContent = analytics.active;
+            document.getElementById('inactive-count').textContent = analytics.inactive;
+
+            const domainChart = document.getElementById('domain-chart');
+            domainChart.innerHTML = analytics.domainBreakdown.map(item => `
+                <div style="padding: 10px; border-bottom: 1px solid #f0f0f0;">
+                    <strong>${item._id}:</strong> ${item.count} certificates
+                </div>
+            `).join('');
+        }
+
+        async function exportCertificates() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/certificates/export`, {
+                    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'certificates-export.xlsx';
+                    a.click();
+                }
+            } catch (error) {
+                console.error('Export error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAnalytics);
+    </script>
+</body>
+</html>

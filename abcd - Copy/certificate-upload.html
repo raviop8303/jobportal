@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Upload - Multiple Formats</title>
+    <link rel="stylesheet" href="script/styles/premium-cert.css">
+    <style>
+        .upload-container { max-width: 800px; margin: 50px auto; padding: 30px; }
+        .upload-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+        .upload-type { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+        .file-icon { font-size: 48px; margin-bottom: 15px; }
+        .upload-area { border: 2px dashed #667eea; border-radius: 8px; padding: 40px; text-align: center; margin: 20px 0; transition: all 0.3s; }
+        .upload-area.dragover { border-color: #5a67d8; background: #f7fafc; }
+        .file-input { display: none; }
+        .upload-btn { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; }
+        .file-list { margin-top: 20px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; margin: 5px 0; }
+        .progress-bar { width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin: 5px 0; }
+        .progress-fill { height: 100%; background: #10b981; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <header class="premium-header">
+        <nav class="nav-container">
+            <div class="logo-section">
+                <span class="logo-text">Certificate Upload</span>
+            </div>
+            <div class="nav-menu">
+                <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="certify-home.html" class="nav-link">Home</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="upload-container">
+        <h1 style="text-align: center; margin-bottom: 30px;">Upload Certificates - Multiple Formats</h1>
+        
+        <div class="upload-types">
+            <div class="upload-type">
+                <div class="file-icon">📊</div>
+                <h3>Excel/CSV Data</h3>
+                <p>Upload student data in bulk</p>
+                <p><small>Supported: All formats</small></p>
+            </div>
+            
+            <div class="upload-type">
+                <div class="file-icon">📄</div>
+                <h3>PDF Certificates</h3>
+                <p>Upload existing PDF certificates</p>
+                <p><small>Supported: All formats</small></p>
+            </div>
+            
+            <div class="upload-type">
+                <div class="file-icon">🖼️</div>
+                <h3>Image Certificates</h3>
+                <p>Upload certificate images</p>
+                <p><small>Supported: All formats</small></p>
+            </div>
+            
+            <div class="upload-type">
+                <div class="file-icon">📝</div>
+                <h3>Any File Type</h3>
+                <p>Upload any certificate format</p>
+                <p><small>All file types accepted</small></p>
+            </div>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <div style="font-size: 48px; margin-bottom: 20px;">📁</div>
+            <h3>Drag & Drop Any File Here</h3>
+            <p>All file types accepted - No restrictions!</p>
+            <input type="file" id="fileInput" class="file-input" multiple>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                Choose Files
+            </button>
+        </div>
+
+        <div id="fileList" class="file-list"></div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="uploadAllBtn" class="upload-btn" style="background: #10b981; display: none;">
+                Upload All Files
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const uploadAllBtn = document.getElementById('uploadAllBtn');
+        let selectedFiles = [];
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (isValidFile(file)) {
+                    selectedFiles.push(file);
+                    displayFile(file);
+                } else {
+                    alert(`File ${file.name} is not supported`);
+                }
+            }
+            
+            if (selectedFiles.length > 0) {
+                uploadAllBtn.style.display = 'block';
+            }
+        }
+
+        function isValidFile(file) {
+            return true; // Accept all files
+        }
+
+        function displayFile(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            const fileIcon = getFileIcon(file.type);
+            const fileSize = (file.size / 1024 / 1024).toFixed(2);
+            
+            fileItem.innerHTML = `
+                <div>
+                    <span style="font-size: 20px; margin-right: 10px;">${fileIcon}</span>
+                    <strong>${file.name}</strong>
+                    <small style="color: #6b7280; margin-left: 10px;">(${fileSize} MB)</small>
+                </div>
+                <button onclick="removeFile('${file.name}')" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Remove</button>
+            `;
+            
+            fileList.appendChild(fileItem);
+        }
+
+        function getFileIcon(fileType) {
+            if (fileType.includes('excel') || fileType.includes('spreadsheet')) return '📊';
+            if (fileType.includes('pdf')) return '📄';
+            if (fileType.includes('image')) return '🖼️';
+            if (fileType.includes('word') || fileType.includes('document')) return '📝';
+            if (fileType.includes('csv')) return '📈';
+            if (fileType.includes('json')) return '📋';
+            return '📁';
+        }
+
+        function removeFile(fileName) {
+            selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+            refreshFileList();
+            
+            if (selectedFiles.length === 0) {
+                uploadAllBtn.style.display = 'none';
+            }
+        }
+
+        function refreshFileList() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach(file => displayFile(file));
+        }
+
+        // Upload functionality
+        uploadAllBtn.addEventListener('click', async () => {
+            const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+            
+            if (!token) {
+                alert('Please login first!');
+                window.location.href = 'login-cert.html';
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                alert('Please select files first!');
+                return;
+            }
+
+            uploadAllBtn.disabled = true;
+            uploadAllBtn.textContent = 'Uploading...';
+
+            try {
+                const formData = new FormData();
+                selectedFiles.forEach(file => formData.append('files', file));
+
+                const response = await fetch('http://localhost:3001/api/certificates/upload-files', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert(`Success! ${data.count} files uploaded.`);
+                    selectedFiles = [];
+                    fileList.innerHTML = '';
+                    uploadAllBtn.style.display = 'none';
+                } else {
+                    alert('Upload failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Upload failed. Check if backend is running on port 3001.');
+            } finally {
+                uploadAllBtn.disabled = false;
+                uploadAllBtn.textContent = 'Upload All Files';
+            }
+        });
+
+        async function uploadFile(file, index) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                // Show progress
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                progressBar.innerHTML = '<div class="progress-fill" style="width: 0%"></div>';
+                
+                const fileItems = document.querySelectorAll('.file-item');
+                if (fileItems[index]) {
+                    fileItems[index].appendChild(progressBar);
+                }
+
+                // Simulate upload progress
+                const progressFill = progressBar.querySelector('.progress-fill');
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                    }
+                }, 100);
+
+                // In real implementation, send to backend
+                // const response = await fetch('/api/certificates/upload', {
+                //     method: 'POST',
+                //     body: formData
+                // });
+
+                console.log(`Uploaded: ${file.name}`);
+                
+            } catch (error) {
+                console.error('Upload failed:', error);
+                alert(`Failed to upload ${file.name}`);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Certificates</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; transition: 0.3s; }
+        .nav a:hover { background: rgba(255,255,255,0.2); }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stat-icon { font-size: 36px; margin-bottom: 10px; }
+        .stat-value { font-size: 32px; font-weight: 700; color: #667eea; margin: 10px 0; }
+        .stat-label { color: #666; font-size: 14px; }
+        .actions { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-info { background: #3b82f6; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .table-container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-box { padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; width: 300px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f9fafb; padding: 15px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 15px; border-bottom: 1px solid #e5e7eb; }
+        tr:hover { background: #f9fafb; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; margin: 0 3px; font-size: 12px; }
+        .btn-view { background: #3b82f6; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .empty { text-align: center; padding: 60px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">📊 Admin Dashboard</div>
+            <div class="nav">
+                <span id="admin-info" style="background:rgba(255,255,255,0.2);padding:10px 20px;border-radius:8px"></span>
+                <a href="certificate.html">Home</a>
+                <a href="cert-upload.html">Upload</a>
+                <a href="cert-add.html">Add Certificate</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📜</div>
+                <div class="stat-value" id="total-certs">0</div>
+                <div class="stat-label">Total Certificates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="active-certs">0</div>
+                <div class="stat-label">Active Certificates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-value" id="recent-certs">0</div>
+                <div class="stat-label">This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="total-students">0</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions">
+            <a href="cert-add.html" class="btn btn-primary">➕ Add New Certificate</a>
+            <a href="cert-upload.html" class="btn btn-success">📤 Upload Files</a>
+            <button class="btn btn-info" onclick="refreshData()">🔄 Refresh</button>
+        </div>
+
+        <!-- Certificates Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>All Certificates</h2>
+                <input type="text" class="search-box" id="search" placeholder="🔍 Search by ID or Name..." onkeyup="filterTable()">
+            </div>
+
+            <div id="loading" class="loading">Loading certificates...</div>
+            <div id="empty" class="empty" style="display:none">
+                <h3>No certificates found</h3>
+                <p>Add your first certificate to get started!</p>
+                <a href="cert-add.html" class="btn btn-primary" style="margin-top:20px">Add Certificate</a>
+            </div>
+
+            <table id="cert-table" style="display:none">
+                <thead>
+                    <tr>
+                        <th>Certificate ID</th>
+                        <th>Student Name</th>
+                        <th>Domain</th>
+                        <th>Duration</th>
+                        <th>Issued Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cert-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let allCertificates = [];
+
+        // Check auth
+        window.addEventListener('load', () => {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            const token = localStorage.getItem('authToken');
+            
+            if (!user || !token) {
+                alert('⚠️ Please login first!');
+                window.location.href = 'cert-login.html';
+                return;
+            }
+            
+            if (user.role !== 'admin') {
+                alert('❌ Access denied! Admin only.');
+                window.location.href = 'certificate.html';
+                return;
+            }
+            
+            document.getElementById('admin-info').textContent = `👤 ${user.name}`;
+            loadDashboard();
+        });
+
+        async function loadDashboard() {
+            const token = localStorage.getItem('authToken');
+
+            try {
+                // Load stats
+                const statsRes = await fetch('http://localhost:3001/api/certificates/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const statsData = await statsRes.json();
+                
+                if (statsData.success) {
+                    document.getElementById('total-certs').textContent = statsData.stats.total;
+                    document.getElementById('active-certs').textContent = statsData.stats.active;
+                    document.getElementById('recent-certs').textContent = statsData.stats.recentUploads;
+                    document.getElementById('total-students').textContent = statsData.stats.total;
+                }
+
+                // Load certificates
+                const certsRes = await fetch('http://localhost:3001/api/certificates/all?limit=100', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const certsData = await certsRes.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (certsData.success && certsData.certificates.length > 0) {
+                    allCertificates = certsData.certificates;
+                    displayCertificates(allCertificates);
+                    document.getElementById('cert-table').style.display = 'table';
+                } else {
+                    document.getElementById('empty').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = '❌ Failed to load. Check if backend is running.';
+            }
+        }
+
+        function displayCertificates(certs) {
+            const tbody = document.getElementById('cert-tbody');
+            tbody.innerHTML = '';
+
+            certs.forEach(cert => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${cert.certificateId}</strong></td>
+                    <td>${cert.studentName}</td>
+                    <td>${cert.internshipDomain}</td>
+                    <td>${new Date(cert.startDate).toLocaleDateString()} - ${new Date(cert.endDate).toLocaleDateString()}</td>
+                    <td>${new Date(cert.issuedDate || cert.createdAt).toLocaleDateString()}</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewCertificate('${cert.certificateId}')">👁️ View</button>
+                        <button class="action-btn btn-view" onclick="downloadCert('${cert.certificateId}')">📥 Download</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterTable() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const filtered = allCertificates.filter(cert => 
+                cert.certificateId.toLowerCase().includes(search) ||
+                cert.studentName.toLowerCase().includes(search) ||
+                cert.internshipDomain.toLowerCase().includes(search)
+            );
+            displayCertificates(filtered);
+        }
+
+        function viewCertificate(certId) {
+            window.open(`certificate.html?search=${certId}`, '_blank');
+        }
+
+        async function downloadCert(certId) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/certificates/download/${certId}`);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `certificate-${certId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                alert('✓ Downloaded!');
+            } catch (error) {
+                alert('❌ Download failed');
+            }
+        }
+
+        function refreshData() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('cert-table').style.display = 'none';
+            document.getElementById('empty').style.display = 'none';
+            loadDashboard();
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = 'cert-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

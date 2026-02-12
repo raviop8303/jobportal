@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Apply Button</title>
+    <style>
+        .apply-btn {
+            padding: 10px 20px;
+            background: #0ea5a4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .apply-btn:hover {
+            background: #0b7b76;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Apply Button</h1>
+    
+    <h2>Test 1: Simple Button</h2>
+    <button class="apply-btn" data-job-id="1">🚀 APPLY NOW (Test 1)</button>
+    
+    <h2>Test 2: Button in Card</h2>
+    <div class="job-card" data-job-id="2">
+        <h3>Frontend Developer</h3>
+        <button class="apply-btn" data-job-id="2">🚀 APPLY NOW (Test 2)</button>
+    </div>
+    
+    <script src="script/dashboard.js"></script>
+    
+    <script>
+        console.log('Jobs loaded:', typeof jobs !== 'undefined' ? jobs.length : 'Not loaded');
+        
+        document.addEventListener('click', function(e) {
+            console.log('Click detected on:', e.target);
+            
+            if (e.target.matches('.apply-btn') || e.target.closest('.apply-btn')) {
+                const btn = e.target.matches('.apply-btn') ? e.target : e.target.closest('.apply-btn');
+                const jobId = btn.getAttribute('data-job-id');
+                
+                console.log('Apply button clicked! Job ID:', jobId);
+                
+                if (jobId) {
+                    e.preventDefault();
+                    alert('Working! Job ID: ' + jobId);
+                    
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('userRole', 'jobseeker');
+                    localStorage.setItem('userName', 'Demo User');
+                    localStorage.setItem('userEmail', 'demo@example.com');
+                    
+                    if (typeof jobs !== 'undefined') {
+                        localStorage.setItem('currentJobs', JSON.stringify(jobs));
+                    }
+                    
+                    // Uncomment to actually redirect
+                    // window.location.href = 'apply.html?jobId=' + jobId;
+                }
+            }
+        }, true);
+    </script>
+</body>
+</html>

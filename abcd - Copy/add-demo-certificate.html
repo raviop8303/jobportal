@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Demo Certificate</title>
+    <link rel="stylesheet" href="script/styles/premium-cert.css">
+    <style>
+        .form-container { max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; }
+        .submit-btn { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <div class="form-container">
+        <h2 style="text-align: center; margin-bottom: 30px;">Add Demo Certificate</h2>
+        
+        <form id="certForm">
+            <div class="form-group">
+                <label>Certificate ID</label>
+                <input type="text" id="certId" placeholder="CERT003" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="studentName" placeholder="Your Name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Internship Domain</label>
+                <input type="text" id="domain" placeholder="Web Development" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" id="startDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" id="endDate" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Add Certificate</button>
+        </form>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="certificate-premium.html" style="color: #667eea;">← Back to Verification</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('certForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newCert = {
+                certificateId: document.getElementById('certId').value,
+                studentName: document.getElementById('studentName').value,
+                internshipDomain: document.getElementById('domain').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                issuedDate: new Date().toISOString(),
+                isActive: true
+            };
+            
+            const certs = JSON.parse(localStorage.getItem('certificates') || '[]');
+            certs.push(newCert);
+            localStorage.setItem('certificates', JSON.stringify(certs));
+            
+            alert('Certificate added successfully! ID: ' + newCert.certificateId);
+            window.location.href = 'certificate-premium.html';
+        });
+    </script>
+</body>
+</html>

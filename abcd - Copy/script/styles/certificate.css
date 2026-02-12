@@ -1,0 +1,208 @@
+/* Certificate Verification Styles */
+.certificate-main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 0;
+}
+
+.search-section {
+    margin-bottom: 3rem;
+}
+
+.search-card {
+    background: white;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-card h1 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.search-card p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    transition: border-color 0.3s;
+}
+
+.search-form input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Certificate Display */
+.certificate-section {
+    margin-top: 3rem;
+}
+
+.certificate-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.certificate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.certificate-header h2 {
+    color: #333;
+    margin: 0;
+}
+
+.download-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.download-btn:hover {
+    background: #218838;
+}
+
+.certificate-preview {
+    border: 3px solid #667eea;
+    border-radius: 10px;
+    padding: 3rem;
+    background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+}
+
+.certificate-content {
+    text-align: center;
+}
+
+.certificate-content h3 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.cert-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 1rem 0;
+}
+
+.student-name, .domain-name {
+    font-size: 1.8rem;
+    color: #667eea;
+    margin: 1.5rem 0;
+    font-weight: bold;
+}
+
+.cert-details {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f0f0f0;
+}
+
+.cert-details p {
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Error Section */
+.error-section {
+    margin-top: 3rem;
+}
+
+.error-card {
+    background: #fff5f5;
+    border: 2px solid #fed7d7;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.error-card h3 {
+    color: #e53e3e;
+    margin-bottom: 1rem;
+}
+
+.error-card p {
+    color: #c53030;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .certificate-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .certificate-preview {
+        padding: 2rem 1rem;
+    }
+    
+    .certificate-content h3 {
+        font-size: 1.5rem;
+    }
+    
+    .student-name, .domain-name {
+        font-size: 1.4rem;
+    }
+}

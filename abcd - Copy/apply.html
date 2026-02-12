@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Job - Job Portal</title>
+    <link rel="stylesheet" href="script/styles/main.css">
+    <style>
+        .apply-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .job-info {
+            background: var(--accent);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .apply-form {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e6edf0;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(14,165,164,0.1);
+        }
+        .file-upload {
+            border: 2px dashed #e6edf0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            border-color: var(--accent);
+            background: rgba(14,165,164,0.05);
+        }
+        .file-upload input {
+            display: none;
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #e6edf0;
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="index.html" class="logo">Job<span class="accent">Portal</span></a>
+                <p class="tagline">Find talent. Get hired.</p>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">← Back to Jobs</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="apply-container">
+        <div class="job-info" id="job-info">
+            <h2 id="job-title">Loading...</h2>
+            <p id="job-company">Loading...</p>
+            <p id="job-location">Loading...</p>
+            <p id="job-salary">Loading...</p>
+        </div>
+
+        <div class="apply-form">
+            <h3>Apply for this Position</h3>
+            <form id="apply-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Years of Experience *</label>
+                    <select id="experience" name="experience" required>
+                        <option value="">Select Experience</option>
+                        <option value="0-1">0-1 years</option>
+                        <option value="1-3">1-3 years</option>
+                        <option value="3-5">3-5 years</option>
+                        <option value="5-10">5-10 years</option>
+                        <option value="10+">10+ years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="skills">Key Skills *</label>
+                    <textarea id="skills" name="skills" rows="3" placeholder="e.g., JavaScript, React, Node.js, Python..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="coverLetter">Why are you interested in this role?</label>
+                    <textarea id="coverLetter" name="coverLetter" rows="4" placeholder="Tell us why you're perfect for this job..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Resume *</label>
+                    <div class="file-upload" onclick="document.getElementById('resume').click()">
+                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                        <p>📄 Click to upload your resume</p>
+                        <small>PDF, DOC, DOCX (Max 5MB)</small>
+                    </div>
+                    <div id="file-info" style="margin-top: 10px; color: var(--accent); font-weight: 600;"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="script/api.js"></script>
+    <script src="script/auth.js"></script>
+    <script>
+        // Get job details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('jobId');
+        
+        // Load job details
+        if (jobId) {
+            const jobs = JSON.parse(localStorage.getItem('currentJobs') || '[]');
+            const job = jobs.find(j => j.id == jobId);
+            
+            if (job) {
+                document.getElementById('job-title').textContent = job.title;
+                document.getElementById('job-company').textContent = `🏢 ${job.company}`;
+                document.getElementById('job-location').textContent = `📍 ${job.location}`;
+                document.getElementById('job-salary').textContent = `💰 ${job.salary}`;
+            }
+        }
+
+        // File upload handling
+        document.getElementById('resume').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const fileInfo = document.getElementById('file-info');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    fileInfo.textContent = '❌ File too large (max 5MB)';
+                    fileInfo.style.color = '#ef4444';
+                    e.target.value = '';
+                } else {
+                    fileInfo.textContent = `✅ ${file.name} selected`;
+                    fileInfo.style.color = 'var(--accent)';
+                }
+            }
+        });
+
+        // Form submission
+        document.getElementById('apply-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const applicationData = {
+                jobId: jobId,
+                jobTitle: document.getElementById('job-title').textContent,
+                company: document.getElementById('job-company').textContent.replace('🏢 ', ''),
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                experience: formData.get('experience'),
+                skills: formData.get('skills'),
+                coverLetter: formData.get('coverLetter'),
+                resumeFile: formData.get('resume').name,
+                appliedAt: new Date().toISOString(),
+                status: 'Applied'
+            };
+
+            // Save to localStorage
+            const applications = JSON.parse(localStorage.getItem('userApplications') || '[]');
+            applications.push(applicationData);
+            localStorage.setItem('userApplications', JSON.stringify(applications));
+            
+            // Update application count
+            localStorage.setItem('applicationCount', applications.length.toString());
+
+            alert('Application submitted successfully!');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

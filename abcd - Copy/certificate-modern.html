@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification - Modern Design</title>
+    <link rel="stylesheet" href="script/styles/certificate-modern.css">
+</head>
+<body>
+    <div class="particles"></div>
+    
+    <nav class="glass-nav">
+        <div class="nav-brand">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">CertifyPro</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">Home</a>
+            <a href="register-cert.html" class="nav-item">Register</a>
+            <a href="login-cert.html" class="nav-item">Login</a>
+            <a href="admin-dashboard.html" class="nav-item glow">Admin</a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <div class="hero-section">
+            <h1 class="main-title">
+                <span class="title-line">Verify Your</span>
+                <span class="title-gradient">Certificate</span>
+            </h1>
+            <p class="subtitle">Enter your certificate ID to instantly verify and download</p>
+        </div>
+
+        <div class="search-container-modern">
+            <div class="glass-card search-card">
+                <div class="input-wrapper">
+                    <input type="text" id="certificateId" placeholder="Enter Certificate ID" class="modern-input">
+                    <button onclick="searchCertificate()" class="search-button">
+                        <span>Verify</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="certificate-display" class="certificate-display hidden">
+            <div class="glass-card certificate-card">
+                <div class="cert-header">
+                    <div class="cert-badge">✓ Verified</div>
+                    <button onclick="downloadCertificate()" class="download-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M10 14L6 10M10 14L14 10M10 14V2M19 14V18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H3C2.46957 20 1.96086 19.7893 1.58579 19.4142C1.21071 19.0391 1 18.5304 1 18V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+                
+                <div class="cert-content">
+                    <div class="cert-icon">🏆</div>
+                    <h2 class="cert-title">CERTIFICATE OF COMPLETION</h2>
+                    <p class="cert-text">This certifies that</p>
+                    <h3 id="student-name" class="student-name"></h3>
+                    <p class="cert-text">has successfully completed the internship in</p>
+                    <h4 id="internship-domain" class="domain-name"></h4>
+                    
+                    <div class="cert-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Duration</span>
+                            <span id="duration" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Certificate ID</span>
+                            <span id="cert-id" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Issued Date</span>
+                            <span id="issued-date" class="detail-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-section" class="error-section hidden">
+            <div class="glass-card error-card">
+                <div class="error-icon">⚠️</div>
+                <h3>Certificate Not Found</h3>
+                <p>Please check your certificate ID and try again</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <h4>Instant Verification</h4>
+                <p>Verify certificates in seconds</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <h4>Secure & Encrypted</h4>
+                <p>Your data is protected</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📱</div>
+                <h4>Mobile Friendly</h4>
+                <p>Access from anywhere</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script/certificate.js"></script>
+    <script>
+        // Particle animation
+        const particlesContainer = document.querySelector('.particles');
+        for(let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>

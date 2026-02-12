@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="no-referrer">
+    <title>Job Listing Portal</title>
+    <link rel="stylesheet" href="script/styles/main.css">
+    <link rel="stylesheet" href="script/styles/animations.css">
+    <link rel="stylesheet" href="script/styles/ui-enhancements.css">
+    <link rel="stylesheet" href="script/styles/visual-enhancements.css">
+    <link rel="stylesheet" href="script/styles/enhanced-features.css">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<!-- <body> -->
+    <!-- <div id="toasts"></div> -->
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <a href="#" id="nav-home" class="logo">Job<span class="accent">Portal</span></a>
+                <p class="tagline">Find talent. Get hired.</p>
+            </div>
+
+            <nav class="main-nav" aria-label="Main Navigation">
+                <a href="#" class="nav-link" id="nav-home-link" onclick="showHomePage(event)">Home</a>
+                <a href="#" class="nav-link" id="nav-about" onclick="showAboutPage(event)">About</a>
+                <a href="certificate.html" class="nav-link">Certificates</a>
+                <a href="#" class="nav-link" id="nav-careers" onclick="showCareersPage(event)">Careers</a>
+                <a href="#" class="nav-link" id="nav-contact" onclick="showContactPage(event)">Contact</a>
+                <button id="theme-toggle" class="nav-link" title="Toggle dark/light theme">🌙</button>
+                <button id="dashboard-toggle" class="nav-link" title="Open dashboard" aria-label="Open dashboard">
+                    <span class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+                <button id="nav-login" class="nav-link hidden">Login / Register</button>
+                <button id="nav-logout" class="nav-cta">👤</button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- Hero Section with improved design -->
+        <section class="hero-banner">
+            <div class="hero-background">
+                <div class="hero-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Find Your <span class="gradient-text">Dream Job</span></h1>
+                        <p class="hero-subtitle">Discover thousands of opportunities from top companies worldwide. Your next career move starts here.</p>
+                        <div class="hero-badges">
+                            <span class="badge">✓ Verified Jobs</span>
+                            <span class="badge">✓ Quick Apply</span>
+                        </div>
+                        
+                        <!-- Enhanced Search Bar -->
+                        <div class="search-container">
+                            <div class="search-bar-enhanced">
+                                <div class="search-input-group">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" id="keyword-search" placeholder="Job title, keywords, or company">
+                                </div>
+                                <div class="location-input-group">
+                                    <span class="location-icon">📍</span>
+                                    <select id="location-filter" aria-label="Filter by location">
+                                        <option value="">Any Location</option>
+                                        <option value="remote">Remote</option>
+                                        <option value="pune">Pune</option>
+                                        <option value="bengaluru">Bengaluru</option>
+                                        <option value="hyderabad">Hyderabad</option>
+                                        <option value="mumbai">Mumbai</option>
+                                        <option value="gurugram">Gurugram</option>
+                                        <option value="noida">Noida</option>
+                                        <option value="chennai">Chennai</option>
+                                        <option value="kolkata">Kolkata</option>
+                                        <option value="ahmedabad">Ahmedabad</option>
+                                    </select>
+                                </div>
+                                <button class="search-btn" onclick="searchJobs()">
+                                    <span>Search Jobs</span>
+                                    <span class="btn-arrow">→</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Advanced Filters Toggle -->
+                            <div class="advanced-filters-toggle">
+                                <button onclick="toggleAdvancedFilters()" class="filter-toggle-btn">
+                                    <span>⚙️ Advanced Filters</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Advanced Filters Panel -->
+                            <div id="advanced-filters" class="advanced-filters-panel" style="display:none">
+                                <div class="filter-row">
+                                    <div class="filter-group">
+                                        <label>💰 Salary Range</label>
+                                        <select id="salary-filter">
+                                            <option value="">Any Salary</option>
+                                            <option value="0-3">0-3 LPA</option>
+                                            <option value="3-6">3-6 LPA</option>
+                                            <option value="6-10">6-10 LPA</option>
+                                            <option value="10-15">10-15 LPA</option>
+                                            <option value="15+">15+ LPA</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label>📊 Experience</label>
+                                        <select id="experience-filter">
+                                            <option value="">Any Experience</option>
+                                            <option value="fresher">Fresher</option>
+                                            <option value="0-2">0-2 Years</option>
+                                            <option value="2-5">2-5 Years</option>
+                                            <option value="5+">5+ Years</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label>🏢 Job Type</label>
+                                        <select id="jobtype-filter">
+                                            <option value="">All Types</option>
+                                            <option value="full-time">Full Time</option>
+                                            <option value="part-time">Part Time</option>
+                                            <option value="contract">Contract</option>
+                                            <option value="internship">Internship</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label>🎓 Education</label>
+                                        <select id="education-filter">
+                                            <option value="">Any Education</option>
+                                            <option value="12th">12th Pass</option>
+                                            <option value="graduate">Graduate</option>
+                                            <option value="postgraduate">Post Graduate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats with Live Counter -->
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="jobs-counter">0</span>
+                                <span class="stat-label">Job Listings</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="companies-counter">0</span>
+                                <span class="stat-label">Companies</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="remote-counter">0</span>
+                                <span class="stat-label">Remote Jobs</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="internships-counter">0</span>
+                                <span class="stat-label">Internships</span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2>How It Works</h2>
+                    <p>Get hired in 3 simple steps</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-icon">🔍</div>
+                        <h3>Search Jobs</h3>
+                        <p>Browse through thousands of job listings from top companies</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">📝</div>
+                        <h3>Apply Easily</h3>
+                        <p>Submit your application with just one click</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">🎉</div>
+                        <h3>Get Hired</h3>
+                        <p>Connect with employers and land your dream job</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Why Choose JobPortal</h2>
+                    <p>Everything you need to find your perfect job</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Quick Apply</h3>
+                        <p>Apply to multiple jobs with a single profile</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure & Private</h3>
+                        <p>Your data is safe and never shared without permission</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Smart Matching</h3>
+                        <p>Get personalized job recommendations</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Mobile Friendly</h3>
+                        <p>Search and apply on the go from any device</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <h3>Resume Builder</h3>
+                        <p>Create professional resumes in minutes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💼</div>
+                        <h3>Application Tracker</h3>
+                        <p>Track all your job applications in one place</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>Job Alerts</h3>
+                        <p>Get notified about relevant job openings</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3>Salary Insights</h3>
+                        <p>Compare salaries and negotiate better</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Career Resources Section -->
+        <section class="career-resources-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Career Resources</h2>
+                    <p>Tools and guides to boost your career</p>
+                </div>
+                <div class="resources-grid">
+                    <div class="resource-card" onclick="showResumeBuilder()">
+                        <div class="resource-icon">📄</div>
+                        <h3>Resume Builder</h3>
+                        <p>Create ATS-friendly resumes</p>
+                        <button class="resource-btn">Start Building →</button>
+                    </div>
+                    <div class="resource-card" onclick="showSalaryCalculator()">
+                        <div class="resource-icon">💵</div>
+                        <h3>Salary Calculator</h3>
+                        <p>Know your market worth</p>
+                        <button class="resource-btn">Calculate Now →</button>
+                    </div>
+                    <div class="resource-card" onclick="showInterviewTips()">
+                        <div class="resource-icon">🎤</div>
+                        <h3>Interview Prep</h3>
+                        <p>Ace your next interview</p>
+                        <button class="resource-btn">Learn More →</button>
+                    </div>
+                    <div class="resource-card" onclick="showCareerTipsPage(event)">
+                        <div class="resource-icon">📚</div>
+                        <h3>Career Tips</h3>
+                        <p>Expert advice for growth</p>
+                        <button class="resource-btn">Read Tips →</button>
+                    </div>
+                    <div class="resource-card" onclick="showSkillAssessment()">
+                        <div class="resource-icon">🎯</div>
+                        <h3>Skill Assessment</h3>
+                        <p>Test your technical skills</p>
+                        <button class="resource-btn">Take Test →</button>
+                    </div>
+                    <div class="resource-card" onclick="showJobMatchScore()">
+                        <div class="resource-icon">⚡</div>
+                        <h3>Job Match Score</h3>
+                        <p>Find your perfect match</p>
+                        <button class="resource-btn">Check Score →</button>
+                    </div>
+                    <div class="resource-card" onclick="showApplicationTracker()">
+                        <div class="resource-icon">📊</div>
+                        <h3>Application Tracker</h3>
+                        <p>Track your applications</p>
+                        <button class="resource-btn">View Tracker →</button>
+                    </div>
+                    <div class="resource-card" onclick="showJobComparison()">
+                        <div class="resource-icon">⚖️</div>
+                        <h3>Job Comparison</h3>
+                        <p>Compare multiple offers</p>
+                        <button class="resource-btn">Compare Now →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Success Metrics Section -->
+        <section class="success-metrics-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Our Success Story</h2>
+                    <p>Real numbers that matter</p>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-number" data-target="50000">0</div>
+                        <div class="metric-label">Active Job Seekers</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🏢</div>
+                        <div class="metric-number" data-target="2500">0</div>
+                        <div class="metric-label">Partner Companies</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">✅</div>
+                        <div class="metric-number" data-target="15000">0</div>
+                        <div class="metric-label">Successful Placements</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⭐</div>
+                        <div class="metric-number" data-target="98">0</div>
+                        <div class="metric-label">Satisfaction Rate %</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Trending Skills Section -->
+        <section class="trending-skills-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🔥 Trending Skills in 2025</h2>
+                    <p>Most in-demand skills by employers</p>
+                </div>
+                <div class="skills-container">
+                    <div class="skill-tag hot">AI & Machine Learning</div>
+                    <div class="skill-tag hot">React.js</div>
+                    <div class="skill-tag hot">Python</div>
+                    <div class="skill-tag">Node.js</div>
+                    <div class="skill-tag">Cloud Computing</div>
+                    <div class="skill-tag">DevOps</div>
+                    <div class="skill-tag">Cybersecurity</div>
+                    <div class="skill-tag">Data Science</div>
+                    <div class="skill-tag">Blockchain</div>
+                    <div class="skill-tag">UI/UX Design</div>
+                    <div class="skill-tag">Docker</div>
+                    <div class="skill-tag">Kubernetes</div>
+                    <div class="skill-tag">TypeScript</div>
+                    <div class="skill-tag">AWS</div>
+                    <div class="skill-tag">MongoDB</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>❓ Frequently Asked Questions</h2>
+                    <p>Got questions? We've got answers</p>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">
+                            <h3>How do I apply for jobs?</h3>
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Simply browse through our job listings, click on any job that interests you, and hit the "Apply Now" button. Make sure your profile is complete before applying.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">
+                            <h3>Is the job portal free to use?</h3>
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Our job portal is completely free for job seekers. You can search, apply, and track applications without any charges.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">
+                            <h3>How can I track my applications?</h3>
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Use our Application Tracker tool from the Career Resources section. It helps you monitor all your job applications in one place.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">
+                            <h3>Can I get job alerts for specific roles?</h3>
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolutely! Subscribe to our newsletter and select your preferences. You'll receive personalized job alerts matching your interests.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">
+                            <h3>How accurate is the salary calculator?</h3>
+                            <span class="faq-icon">▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our salary calculator uses industry data and market trends to provide estimates. Actual salaries may vary based on company, skills, and negotiation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="container">
+            <section id="job-search-section" class="jobs-section">
+                <div class="section-header">
+                    <h2>Latest Job Opportunities</h2>
+                    <p>Explore our curated selection of the best job openings</p>
+                </div>
+                
+                <div class="jobs-container">
+                    <div class="jobs-grid">
+                        <div id="job-listings" class="job-listings">
+                            <div class="loading-state">
+                                <!-- Skeleton Loading Cards -->
+                                
+                                 <div id="jobTableContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="jobs-sidebar">
+                        <div class="sidebar-card">
+                            <h3>Explore More</h3>
+                            <p>Ready to see all available positions?</p>
+                            <button id="view-all-jobs-btn" class="btn-explore">
+                                <span class="btn-icon">🚀</span>
+                                <div>View All Jobs & Internships</div>
+                            </button>
+                        </div>
+                        
+                        <div class="sidebar-card">
+                            <h3>Job Categories</h3>
+                            <div class="category-tags">
+                                <span class="category-tag" onclick="showCategoryPage('Frontend')" style="cursor:pointer">Frontend</span>
+                                <span class="category-tag" onclick="showCategoryPage('Backend')" style="cursor:pointer">Backend</span>
+                                <span class="category-tag" onclick="showCategoryPage('Full Stack')" style="cursor:pointer">Full Stack</span>
+                                <span class="category-tag" onclick="showCategoryPage('DevOps')" style="cursor:pointer">DevOps</span>
+                                <span class="category-tag" onclick="showCategoryPage('Data Science')" style="cursor:pointer">Data Science</span>
+                                <span class="category-tag" onclick="showCategoryPage('Mobile')" style="cursor:pointer">Mobile</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+           <section class="featured-companies">
+    <div class="section-header">
+        <h2>Trusted by Top Companies</h2>
+        <p>Join thousands of professionals working at leading organizations</p>
+    </div>
+            
+       
+<div class="companies-grid">
+        <div class="company-logo" onclick="filterByCompany('Google')" style="cursor:pointer">
+            <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
+        </div>
+        <div class="company-logo" onclick="filterByCompany('Microsoft')" style="cursor:pointer">
+            <img src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" alt="Microsoft" style="height:30px">
+        </div>
+        <div class="company-logo" onclick="filterByCompany('Amazon')" style="cursor:pointer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"  style="height:25px">
+        </div>
+        <div class="company-logo" onclick="filterByCompany('Meta')" style="cursor:pointer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" alt="Meta" style="height:25px">
+        </div>
+        <div class="company-logo" onclick="filterByCompany('Apple')" style="cursor:pointer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" style="height:35px">
+        </div>
+        <div class="company-logo" onclick="filterByCompany('IBM')" style="cursor:pointer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM"  style="height:30px">
+        </div>
+    </div>
+</section>
+
+            <!-- Success Stories Section -->
+            <section class="testimonials-section">
+                <div class="section-header">
+                    <h2>Team Member's Details </h2>
+                    <p>See how we've helped professionals land their dream jobs</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"AI&ML Student 2nd Year In Lucknow."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💻</div>
+                            <div>
+                                <div class="author-name">Bhaskar Bind</div>
+                                <div class="author-role">Team Leader To Help With Project</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good Knowledge In Development"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍💼</div>
+                            <div>
+                                <div class="author-name">Sakshi Argade</div>
+                                <div class="author-role">Assitant Role</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good In Frontend Developer "</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍💼</div>
+                            <div>
+                                <div class="author-name">Ritama Kundu</div>
+                                <div class="author-role">Frontend Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Good in Backend Developer"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍🎨</div>
+                            <div>
+                                <div class="author-name">Happy Jangir</div>
+                                <div class="author-role">Backend Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Newsletter Section with Preferences -->
+            <section class="newsletter-section">
+                <div class="newsletter-content">
+                    <div class="newsletter-text">
+                        <h2>🔔 Get Personalized Job Alerts</h2>
+                        <p>Subscribe to receive the latest job opportunities directly in your inbox</p>
+                    </div>
+                    <div class="newsletter-form-enhanced">
+                        <input type="email" id="newsletter-email" placeholder="Enter your email" aria-label="Email for newsletter">
+                        <div class="preferences-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="pref-tech" checked> Technology
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="pref-remote" checked> Remote Jobs
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="pref-intern"> Internships
+                            </label>
+                        </div>
+                        <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe Now</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="container">
+
+            <section id="all-jobs-section" class="section-hidden">
+                <!-- all jobs/internships page injected by JS -->
+                <div class="all-jobs-container">
+                    <div class="all-jobs-header">
+                        <h2>All Jobs & Internships</h2>
+                        <button id="back-to-home" class="nav-link">← Back to Home</button>
+                    </div>
+                    <div class="all-jobs-filters">
+                        <input type="text" id="all-search-input" placeholder="Search jobs...">
+                        <select id="all-type-filter" aria-label="Filter by type">
+                            <option value="">All Types</option>
+                            <option value="jobs">Jobs Only</option>
+                            <option value="internships">Internships Only</option>
+                        </select>
+                        <select id="all-location-filter" aria-label="Filter by location">
+                            <option value="">All Locations</option>
+                            <option value="remote">Remote</option>
+                        </select>
+                        <button id="all-search-btn" class="btn-primary">Search</button>
+                    </div>
+                    <div id="all-jobs-list" class="all-jobs-list">
+                        Job cards injected here
+                    </div>
+                </div>
+            </section>
+
+            <section id="dashboard-section" class="dashboard-panel section-hidden" aria-hidden="true">
+                <div class="dashboard-header dashboard-draggable">
+                    <h2>Dashboard</h2>
+                    <button id="dashboard-close" class="nav-link" aria-label="Close dashboard">✕</button>
+                </div>
+                <div id="dashboard-content" class="dashboard-content">
+                    <!-- dashboard injected by JS -->
+                </div>
+            </section>
+
+            <div id="dashboard-overlay" class="dashboard-overlay section-hidden" aria-hidden="true"></div>
+            
+            <!-- Dedicated Pages Section -->
+            <section id="dedicated-page" class="section-hidden" style="min-height:80vh;padding:40px 0">
+                <div id="dedicated-page-content"></div>
+            </section>
+            
+            <!-- Resume Builder Modal -->
+            <div id="resume-builder-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content resume-builder">
+                    <div class="modal-header">
+                        <h2>📄 Resume Builder</h2>
+                        <button onclick="closeResumeBuilder()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="resume-form">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="resume-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" id="resume-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone *</label>
+                                <input type="tel" id="resume-phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Skills (comma separated)</label>
+                                <input type="text" id="resume-skills" placeholder="JavaScript, React, Node.js">
+                            </div>
+                            <div class="form-group">
+                                <label>Experience (years)</label>
+                                <input type="number" id="resume-exp" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Education</label>
+                                <textarea id="resume-education" rows="3"></textarea>
+                            </div>
+                            <button type="button" onclick="generateResume()" class="btn-primary">Generate Resume</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salary Calculator Modal -->
+            <div id="salary-calculator-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content salary-calculator">
+                    <div class="modal-header">
+                        <h2>💰 Salary Calculator</h2>
+                        <button onclick="closeSalaryCalculator()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Job Role</label>
+                            <select id="salary-role">
+                                <option value="frontend">Frontend Developer</option>
+                                <option value="backend">Backend Developer</option>
+                                <option value="fullstack">Full Stack Developer</option>
+                                <option value="data">Data Scientist</option>
+                                <option value="devops">DevOps Engineer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Experience (years)</label>
+                            <input type="number" id="salary-exp" min="0" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <select id="salary-location">
+                                <option value="bangalore">Bangalore</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="pune">Pune</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="delhi">Delhi NCR</option>
+                            </select>
+                        </div>
+                        <button onclick="calculateSalary()" class="btn-primary">Calculate Salary</button>
+                        <div id="salary-result" class="salary-result" style="display:none">
+                            <h3>Estimated Salary Range</h3>
+                            <div class="salary-range">
+                                <span id="salary-min"></span> - <span id="salary-max"></span> LPA
+                            </div>
+                            <div class="salary-breakdown">
+                                <p><strong>Monthly:</strong> ₹<span id="monthly-salary"></span></p>
+                                <p><strong>Market Trend:</strong> <span id="market-trend"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skill Assessment Modal -->
+            <div id="skill-assessment-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content skill-assessment">
+                    <div class="modal-header">
+                        <h2>🎯 Skill Assessment</h2>
+                        <button onclick="closeSkillAssessment()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="assessment-intro">
+                            <p>Test your skills and get personalized job recommendations</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Your Domain</label>
+                            <select id="skill-domain">
+                                <option value="frontend">Frontend Development</option>
+                                <option value="backend">Backend Development</option>
+                                <option value="fullstack">Full Stack Development</option>
+                                <option value="data">Data Science</option>
+                                <option value="mobile">Mobile Development</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Experience Level</label>
+                            <select id="skill-level">
+                                <option value="beginner">Beginner (0-1 years)</option>
+                                <option value="intermediate">Intermediate (1-3 years)</option>
+                                <option value="advanced">Advanced (3-5 years)</option>
+                                <option value="expert">Expert (5+ years)</option>
+                            </select>
+                        </div>
+                        <button onclick="startAssessment()" class="btn-primary">Start Assessment</button>
+                        <div id="assessment-result" style="display:none">
+                            <div class="score-display">
+                                <h3>Your Skill Score</h3>
+                                <div class="score-circle">
+                                    <span id="skill-score">0</span>/100
+                                </div>
+                                <p id="skill-feedback"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Match Score Modal -->
+            <div id="job-match-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content job-match">
+                    <div class="modal-header">
+                        <h2>⚡ Job Match Score</h2>
+                        <button onclick="closeJobMatch()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Your Skills (comma separated)</label>
+                            <input type="text" id="match-skills" placeholder="React, Node.js, MongoDB">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Location</label>
+                            <select id="match-location">
+                                <option value="any">Any Location</option>
+                                <option value="remote">Remote</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="pune">Pune</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Salary (LPA)</label>
+                            <input type="number" id="match-salary" min="0" placeholder="e.g., 8">
+                        </div>
+                        <button onclick="calculateJobMatch()" class="btn-primary">Find Matches</button>
+                        <div id="match-results" style="display:none">
+                            <h3>Top Matching Jobs</h3>
+                            <div id="match-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Application Tracker Modal -->
+            <div id="application-tracker-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content application-tracker">
+                    <div class="modal-header">
+                        <h2>📊 Application Tracker</h2>
+                        <button onclick="closeApplicationTracker()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="tracker-stats">
+                            <div class="stat-box">
+                                <span class="stat-value" id="total-apps">0</span>
+                                <span class="stat-label">Total Applied</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-value" id="pending-apps">0</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-value" id="interview-apps">0</span>
+                                <span class="stat-label">Interviews</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-value" id="offer-apps">0</span>
+                                <span class="stat-label">Offers</span>
+                            </div>
+                        </div>
+                        <div class="add-application">
+                            <h3>Add New Application</h3>
+                            <div class="form-group">
+                                <input type="text" id="app-company" placeholder="Company Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="app-position" placeholder="Position">
+                            </div>
+                            <div class="form-group">
+                                <select id="app-status">
+                                    <option value="applied">Applied</option>
+                                    <option value="screening">Screening</option>
+                                    <option value="interview">Interview</option>
+                                    <option value="offer">Offer</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <button onclick="addApplication()" class="btn-primary">Add Application</button>
+                        </div>
+                        <div id="applications-list" class="applications-list"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Comparison Modal -->
+            <div id="job-comparison-modal" class="modal-overlay" style="display:none">
+                <div class="modal-content job-comparison">
+                    <div class="modal-header">
+                        <h2>⚖️ Job Comparison Tool</h2>
+                        <button onclick="closeJobComparison()" class="close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="comparison-grid">
+                            <div class="job-input-card">
+                                <h3>Job Offer 1</h3>
+                                <input type="text" id="job1-company" placeholder="Company Name">
+                                <input type="text" id="job1-position" placeholder="Position">
+                                <input type="number" id="job1-salary" placeholder="Salary (LPA)">
+                                <input type="text" id="job1-location" placeholder="Location">
+                                <select id="job1-culture">
+                                    <option value="">Work Culture</option>
+                                    <option value="5">Excellent</option>
+                                    <option value="4">Good</option>
+                                    <option value="3">Average</option>
+                                    <option value="2">Below Average</option>
+                                </select>
+                            </div>
+                            <div class="job-input-card">
+                                <h3>Job Offer 2</h3>
+                                <input type="text" id="job2-company" placeholder="Company Name">
+                                <input type="text" id="job2-position" placeholder="Position">
+                                <input type="number" id="job2-salary" placeholder="Salary (LPA)">
+                                <input type="text" id="job2-location" placeholder="Location">
+                                <select id="job2-culture">
+                                    <option value="">Work Culture</option>
+                                    <option value="5">Excellent</option>
+                                    <option value="4">Good</option>
+                                    <option value="3">Average</option>
+                                    <option value="2">Below Average</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="compareJobs()" class="btn-primary">Compare Jobs</button>
+                        <div id="comparison-result" style="display:none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <h3>Job<span class="accent">Portal</span></h3>
+                        <p>Your gateway to amazing career opportunities</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showAllJobsPage(event)">Browse Jobs</a></li>
+                        <li><a href="#" onclick="showCompaniesPage(event)">Companies</a></li>
+                        <li><a href="#" onclick="showCareerTipsPage(event)">Career Tips</a></li>
+                        <li><a href="#" onclick="showContactPage(event)">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showCategoryPage('Technology')">Technology</a></li>
+                        <li><a href="#" onclick="showCategoryPage('Design')">Design</a></li>
+                        <li><a href="#" onclick="showCategoryPage('Marketing')">Marketing</a></li>
+                        <li><a href="#" onclick="showCategoryPage('Remote')">Remote Jobs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <div href="#" class="social-link">📧</div>
+                        <div class="platform-name">Twitter</div>
+                        <div href="#" class="social-link">💼</div>
+                        <div class="platform-name">Linkedin</div>
+                        <div href="#" class="social-link">🐦</div>
+                        <div class="platform-name">Instagram</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Job Portal by Group 19 - Web Development. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JOBS DATA - LOAD FIRST -->
+    <!-- PERSISTENT STORAGE - LOAD FIRST -->
+    <script src="script/backend-storage.js"></script>
+    <script src="script/persistent-storage.js"></script>
+    
+    <script src="script/performance-optimizer.js"></script>
+    <script src="script/visual-enhancements.js"></script>
+    <script src="script/security.js"></script>
+    <script src="script/toast.js"></script>
+    <script src="script/profile-photo.js"></script>
+    <script src="script/employer-analytics.js"></script>
+    <script src="script/dashboard.js"></script>
+    <script src="script/api.js"></script>
+    <script src="script/features.js"></script>
+    <script src="script/advanced-features.js"></script>
+    <script src="script/ui-helpers.js"></script>
+    <script src="script/auth.js"></script>
+    <script src="script/unified-login-check.js"></script>
+    <script src="script/main.js"></script>
+    <script src="script/login.js"></script>
+    <script src="script/inline-scripts.js"></script>
+    <script src="script/complete-functionality.js"></script>
+    <script src="script/advanced-enhancements.js"></script>
+    <script src="script/premium-features.js"></script>
+    <script src="script/animate-functions.js"></script>
+    <script src="script/enhanced-features.js"></script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top" title="Back to top">
+        ↑
+    </button>
+    
+    <!-- Quick Actions Floating Button -->
+    <div class="quick-actions-fab" id="quick-actions-fab">
+        <button class="fab-main" onclick="toggleQuickActions()">
+            <span class="fab-icon">✨</span>
+        </button>
+        <div class="fab-menu" id="fab-menu" style="display:none">
+            <button class="fab-item" onclick="showResumeBuilder()" title="Resume Builder">
+                <span>📄</span>
+            </button>
+            <button class="fab-item" onclick="showSalaryCalculator()" title="Salary Calculator">
+                <span>💰</span>
+            </button>
+            <button class="fab-item" onclick="showApplicationTracker()" title="Application Tracker">
+                <span>📊</span>
+            </button>
+            <button class="fab-item" onclick="showJobMatchScore()" title="Job Match">
+                <span>⚡</span>
+            </button>
+        </div>
+    </div>
+    
+</body>
+</html>
+    

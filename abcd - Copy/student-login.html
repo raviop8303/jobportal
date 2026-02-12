@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - Certificate Portal</title>
+    <link rel="stylesheet" href="script/styles/premium-cert.css">
+    <style>
+        .login-container { max-width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; }
+        .form-group input:focus { border-color: #667eea; outline: none; }
+        .login-btn { width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .login-btn:hover { background: #5a67d8; }
+        .register-link { text-align: center; margin-top: 20px; }
+        .register-link a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <div class="login-container">
+        <h2 style="text-align: center; margin-bottom: 30px;">Student Login</h2>
+        
+        <form id="studentLoginForm">
+            <div class="form-group">
+                <label for="studentId">Student ID</label>
+                <input type="text" id="studentId" placeholder="Enter your Student ID" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="studentName">Full Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        
+        <div class="register-link">
+            <p>Don't have an account? <a href="student-register.html">Register here</a></p>
+            <p><a href="certificate-premium.html">Verify Certificate without login</a></p>
+        </div>
+    </div>
+
+    <script src="script/auth.js"></script>
+    <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (auth.isLoggedIn() && auth.getUserType() === 'student') {
+                window.location.href = 'student-portal.html';
+                return;
+            }
+        });
+
+        document.getElementById('studentLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const studentId = document.getElementById('studentId').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
+            
+            if (!studentId || !studentName) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            try {
+                // Set persistent session
+                auth.setSession('student', {
+                    studentId: studentId,
+                    studentName: studentName
+                });
+                
+                // Redirect to student portal
+                window.location.href = 'student-portal.html';
+                
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

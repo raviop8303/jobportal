@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Certificates - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .logo { color: white; font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; transition: 0.3s; font-weight: 500; }
+        .nav a:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .upload-box { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-bottom: 30px; }
+        .upload-box h2 { color: #1f2937; margin-bottom: 10px; font-size: 32px; display: flex; align-items: center; gap: 10px; }
+        .upload-box .subtitle { color: #6b7280; margin-bottom: 30px; font-size: 16px; }
+        .info-box { background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 5px solid #ffc107; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(255,193,7,0.2); }
+        .info-box strong { color: #856404; font-size: 18px; display: block; margin-bottom: 10px; }
+        .info-box ul { margin: 15px 0 0 20px; color: #856404; line-height: 1.8; }
+        .info-box li { margin: 8px 0; }
+        .upload-area { border: 3px dashed #667eea; border-radius: 15px; padding: 80px 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); position: relative; overflow: hidden; }
+        .upload-area::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%); animation: pulse 3s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .upload-area:hover { background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%); border-color: #4f46e5; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(102,126,234,0.2); }
+        .upload-area.dragover { background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border-color: #2563eb; border-width: 4px; }
+        .upload-icon { font-size: 80px; margin-bottom: 20px; animation: bounce 2s infinite; position: relative; z-index: 1; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .upload-area h3 { font-size: 24px; color: #1f2937; margin-bottom: 10px; position: relative; z-index: 1; }
+        .upload-area p { position: relative; z-index: 1; }
+        .file-input { display: none; }
+        .btn { padding: 15px 40px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(102,126,234,0.5); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .file-list { margin-top: 30px; }
+        .file-item { background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%); padding: 20px; border-radius: 12px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e5e7eb; transition: all 0.3s; }
+        .file-item:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.1); transform: translateX(5px); }
+        .file-info { display: flex; align-items: center; gap: 15px; }
+        .file-icon { font-size: 32px; }
+        .file-details strong { color: #1f2937; font-size: 16px; display: block; margin-bottom: 5px; }
+        .file-details span { color: #6b7280; font-size: 14px; }
+        .remove-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .remove-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+        .message { padding: 20px; border-radius: 12px; margin-bottom: 20px; display: none; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .message.success { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border-left: 5px solid #10b981; }
+        .message.error { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; border-left: 5px solid #ef4444; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; text-align: center; color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .stat-card .stat-icon { font-size: 40px; margin-bottom: 10px; }
+        .stat-card .stat-value { font-size: 32px; font-weight: 700; margin-bottom: 5px; }
+        .stat-card .stat-label { font-size: 14px; opacity: 0.9; }
+        @media (max-width: 768px) { .upload-box { padding: 30px 20px; } .upload-area { padding: 60px 20px; } .stats-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎓 Admin Panel</div>
+            <div class="nav">
+                <span id="admin-info" style="color:white;padding:10px 20px;background:rgba(255,255,255,0.2);border-radius:8px;font-weight:600;"></span>
+                <a href="certificate.html">🏠 Home</a>
+                <a href="cert-dashboard.html">📊 Dashboard</a>
+                <a href="#" onclick="logout()">🚪 Logout</a>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-value" id="total-files">0</div>
+                <div class="stat-label">Files Selected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💾</div>
+                <div class="stat-value" id="total-size">0 MB</div>
+                <div class="stat-label">Total Size</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="upload-status">Ready</div>
+                <div class="stat-label">Status</div>
+            </div>
+        </div>
+
+        <div class="upload-box">
+            <h2>📤 Upload Certificates</h2>
+            <p class="subtitle">Upload certificate files and manage your certificate database</p>
+            
+            <div class="info-box">
+                <strong>⚠️ Important: File Naming Convention</strong>
+                <ul>
+                    <li><strong>🎯 Include Certificate ID in filename:</strong> CERT001.pdf or CERT001_StudentName.pdf</li>
+                    <li><strong>⚙️ System auto-creates entry</strong> with ID extracted from filename</li>
+                    <li><strong>✏️ Update details later</strong> in dashboard or manual entry form</li>
+                    <li><strong>📝 Example:</strong> CERT123.pdf → Creates entry with ID "CERT123"</li>
+                    <li><strong>📊 Supported formats:</strong> PDF, JPG, PNG, DOCX (Max 50MB per file)</li>
+                </ul>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">📁</div>
+                <h3>Drag & Drop Files Here</h3>
+                <p style="color:#6b7280;margin:10px 0;font-size:16px;">or click to browse your computer</p>
+                <p style="color:#9ca3af;font-size:14px;margin-top:15px;">📦 All file types accepted • Max 50MB per file • Multiple files supported</p>
+                <input type="file" id="file-input" class="file-input" multiple>
+            </div>
+
+            <div id="file-list" class="file-list"></div>
+
+            <button id="upload-btn" class="btn" style="margin-top:30px;display:none;width:100%;" onclick="uploadFiles()">
+                🚀 Upload All Files
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const uploadBtn = document.getElementById('upload-btn');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            for (let file of files) {
+                selectedFiles.push(file);
+                displayFile(file);
+            }
+            uploadBtn.style.display = selectedFiles.length > 0 ? 'block' : 'none';
+            updateStats();
+        }
+
+        function displayFile(file) {
+            const fileExt = file.name.split('.').pop().toUpperCase();
+            const fileIcons = {
+                'PDF': '📝',
+                'JPG': '🖼️',
+                'JPEG': '🖼️',
+                'PNG': '🖼️',
+                'DOCX': '📄',
+                'DOC': '📄'
+            };
+            const icon = fileIcons[fileExt] || '📁';
+            
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">${icon}</div>
+                    <div class="file-details">
+                        <strong>${file.name}</strong>
+                        <span>${(file.size / 1024 / 1024).toFixed(2)} MB • ${fileExt} File</span>
+                    </div>
+                </div>
+                <button class="remove-btn" onclick="removeFile('${file.name}')">🗑️ Remove</button>
+            `;
+            fileList.appendChild(item);
+        }
+
+        function updateStats() {
+            const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+            document.getElementById('total-files').textContent = selectedFiles.length;
+            document.getElementById('total-size').textContent = (totalSize / 1024 / 1024).toFixed(2) + ' MB';
+        }
+
+        function removeFile(fileName) {
+            selectedFiles = selectedFiles.filter(f => f.name !== fileName);
+            refreshFileList();
+            uploadBtn.style.display = selectedFiles.length > 0 ? 'block' : 'none';
+            updateStats();
+        }
+
+        function refreshFileList() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach(file => displayFile(file));
+        }
+
+        async function uploadFiles() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showMessage('⚠️ Please login first', 'error');
+                setTimeout(() => window.location.href = 'cert-login.html', 1500);
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                showMessage('⚠️ Please select files first', 'error');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '🔄 Uploading...';
+            document.getElementById('upload-status').textContent = 'Uploading...';
+
+            try {
+                const formData = new FormData();
+                selectedFiles.forEach(file => formData.append('files', file));
+
+                const response = await fetch('http://localhost:3001/api/certificates/upload-files', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    let message = `✅ Success! ${data.filesUploaded} files uploaded.`;
+                    if (data.certificatesCreated > 0) {
+                        message += `\n✅ ${data.certificatesCreated} certificate entries created!`;
+                        message += `\n🆔 IDs: ${data.certificateIds.join(', ')}`;
+                        message += `\n\n✏️ Update details in Dashboard or Manual Entry Form.`;
+                    }
+                    showMessage(message, 'success');
+                    selectedFiles = [];
+                    fileList.innerHTML = '';
+                    uploadBtn.style.display = 'none';
+                    fileInput.value = '';
+                    document.getElementById('upload-status').textContent = 'Completed';
+                    updateStats();
+                } else {
+                    showMessage('❌ Upload failed: ' + (data.message || 'Unknown error'), 'error');
+                    document.getElementById('upload-status').textContent = 'Failed';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('❌ Upload failed. Check if backend is running.', 'error');
+                document.getElementById('upload-status').textContent = 'Error';
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '🚀 Upload All Files';
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type}`;
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 5000);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                alert('✓ Logged out successfully!');
+                window.location.href = 'cert-login.html';
+            }
+        }
+
+        // Check auth on load
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            
+            if (!token || !user) {
+                alert('⚠️ Please login first!');
+                window.location.href = 'cert-login.html';
+                return;
+            }
+            
+            if (user.role !== 'admin') {
+                alert('❌ Access denied! Admin only.');
+                window.location.href = 'certificate.html';
+                return;
+            }
+            
+            document.getElementById('admin-info').textContent = `👤 ${user.name} (Admin)`;
+        });
+    </script>
+</body>
+</html>
