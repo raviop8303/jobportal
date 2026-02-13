@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:3001/api';
 
 // Get token from localStorage
 const getToken = () => localStorage.getItem('token');
